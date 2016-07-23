@@ -1,10 +1,9 @@
 # run using `nodemon --exec "python" src/server/app.py` to detect filechanges
+# must be python2
 
 # TODO: separate this into modules, e.g. utils.py / config.py / serve.py
-import logging
-import pickle
-from sys import exit
-from os import environ
+import logging, pickle, sys, os
+
 from jsonrpc import JSONRPCResponseManager, dispatcher # if this crashes, run `pip install jsonrpc`
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
@@ -24,12 +23,12 @@ def save(data):
 
 if __name__ == '__main__':
   env_version = '1'
-  if 'ENV_VERSION' not in environ or environ['ENV_VERSION'] != env_version:
-    print 'Run `. env.sh` from the root project directory'
-    exit(0)
+  env = os.environ
+  if 'MOO_ENV_VERSION' not in env or env['MOO_ENV_VERSION'] != env_version:
+    raise 'Run `. env.sh` from the root project directory'
 
-  root = environ['MOO_ROOT']
-  port = environ['MOO_PORT']
+  root = env['MOO_ROOT']
+  port = env['MOO_PORT']
   data_path = '%s/data/data.p' % root
 
   logging.basicConfig()
